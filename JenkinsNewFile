@@ -1,0 +1,39 @@
+node {
+
+    
+    echo "Job Name is ${env.JOB_NAME}"
+    echo "Build Number is ${env.BUILD_NUMBER}"
+    echo "The Workspace is ${env.WORKSPACE}"
+
+
+  def mavenHome = tool name: "maven3.9.0"
+    stage('CheckoutCode'){
+        git branch: 'development', credentialsId: '892ac1c6-4957-4a50-8e42-effc845c24b0', url: 'https://github.com/aspiring-devops/maven-web-application.git'
+ }
+
+    stage('Build'){
+        sh "${mavenHome}/bin/mvn clean package"
+ }
+    stage('ExecuteSonarqubeReport'){
+          sh "${mavenHome}/bin/mvn sonar:sonar"
+ }
+    stage('UploadArtifactIntoNexus'){
+     sh "${mavenHome}/bin/mvn clean deploy"
+
+ }
+ 
+    stage('DeployAppIntoTomcatServer'){
+        /*
+      sshagent(['bc4d44cb-9584-4c5c-9a42-a892f9fc6a61']) {
+      sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.33.138:/opt/apache-tomcat-9.0.71/webapps/"
+     }
+     */
+     deploy adapters: [tomcat9(credentialsId: 'ad9b78ed-4375-4440-8435-4e4ef34c8994', path: '', url: 'http://172.31.33.138:8082/')], contextPath: null, war: '**/maven-web-application.war'
+ }
+  
+
+
+
+
+
+ }
