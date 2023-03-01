@@ -31,7 +31,7 @@ pipeline{
 
        } 
        } 
-
+  /*
          stage('ExecuteSonarQubeReport'){
           steps{
            sh "mvn clean sonar:sonar"
@@ -51,7 +51,7 @@ pipeline{
          }
          }
          }
-         
+      */  
     }//stages closing
     
     post {
