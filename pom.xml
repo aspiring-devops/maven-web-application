@@ -97,13 +97,13 @@
 	    <repository>
 	      <id>nexus</id>
 	      <name>Mithun Technologies Releases Nexus Repository</name>
-	      <url>http://172.31.12.73:8081/repository/hdfcbank-release-repo/</url>
+	      <url>http://172.31.4.242:8081/repository/hdfc-snapshot/</url>
 	    </repository>
 	    
 	    <snapshotRepository>
 	      <id>nexus</id>
 	      <name>Mithun Technologies Snapshot Nexus Repository </name>
-	      <url>http://172.31.12.73:8081/repository/hdfcbank-snapshot-repo/</url>
+	      <url>http://172.31.4.242:8081/repository/hdfc-snapshot/</url>
 	    </snapshotRepository>
 	    
 	</distributionManagement>
