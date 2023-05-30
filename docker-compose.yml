@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   springboot:
-    image: dockerhandson/maven-web-app:VERSION
+    image: kunal508/maven-web-application:TAG
     restart: always
     ports:
     - 9090:8080
