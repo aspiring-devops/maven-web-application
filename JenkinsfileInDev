@@ -1,0 +1,29 @@
+node{
+    def mavenHome=tool name : "mvn:3.9.6"
+    
+   // properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '5', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([cron('* * * * *')])])
+    
+    echo "Job Name is : ${env.JOB_NAME}"
+    echo "Build Number is : ${env.BUILD_NUMBER}"
+    echo "Node Name is : ${env.NODE_NAME}"
+    stage('CheckoutCode'){
+        git branch: 'development', credentialsId: 'a339f27f-8846-4731-b98b-9a27519f85da', url: 'https://github.com/aspiring-devops/maven-web-application.git'
+    }
+    
+    stage('Buildcode'){
+        sh "${mavenHome}/bin/mvn clean package"
+    }
+    stage("ExecuteSonarqubeReport"){
+        sh "${mavenHome}/bin/mvn sonar:sonar"
+    }
+    stage('UploadArtifactsIntoNexus'){
+        sh "${mavenHome}/bin/mvn clean deploy"
+    }
+    stage('DeployAppIntoContainer'){
+          sshagent(['b49429d4-61fb-4b76-ada0-a50893663987']) {
+             sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.6.225:/opt/apache-tomcat-9.0.86/webapps"
+   }
+        
+        //deploy adapters: [tomcat9(credentialsId: 'b6d9e0f5-fdd2-445d-9b1a-fd574b241317', path: '', url: 'http://172.31.6.225:8080')], contextPath: null, war: '**/maven-web-application.war'
+    }
+}
