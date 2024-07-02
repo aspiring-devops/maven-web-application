@@ -1,0 +1,63 @@
+node{
+    
+    echo "Job Name is : ${env.JOB_NAME}"
+    echo "Buid Number is : ${env.BUILD_NUMBER}"
+    echo "Node Name is : ${env.NODE_NAME}"
+    
+    def mavenHome = tool name: "mvn3.96"
+    try{
+    stage('CheckoutCode'){
+        sendSlackNotifications('STARTED')
+        git branch: 'development', credentialsId: '2cfa8a61-176e-4009-8359-7d3466b479d9', url: 'https://github.com/aspiring-devops/maven-web-application.git'
+    }
+    stage('BuildtheCode'){
+        sh "${mavenHome}/bin/mvn clean package"
+    }
+    stage('ExecuteSonarqubeReport'){
+        sh "${mavenHome}/bin/mvn sonar:sonar"
+    }
+    stage('UploadArtifactOntoNexus'){
+        sh "${mavenHome}/bin/mvn clean deploy"
+    }
+    stage('DeployTheAppOnTomcat'){
+        sshagent(['11d084e9-86ab-470d-b0ce-d406dc1d77a6']) {
+          sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.8.121:/opt/apache-tomcat-8.5.100/webapps"
+}
+    }
+    }
+    catch(e){
+        currentBuild.result="failed"
+        throw e
+    }//catch closing
+    finally{
+        sendSlackNotifications('currentBuild.result')
+
+    }//finally closing
+    
+}//node closing
+
+def sendSlackNotifications(String buildStatus = 'STARTED'){
+           
+           //build status of null means successful
+           
+           buildStatus = buildStatus ?: 'SUCCESS'
+           def colorName = 'RED'
+           def colorCode = '#FF0000'
+           def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+           def summary = "${subject} (${env.BUILD_URL})"
+
+             // Override default values based on build status
+  if (buildStatus == 'STARTED') {
+    colorName = 'YELLOW'
+    colorCode = '#FFFF00'
+  } else if (buildStatus == 'SUCCESS') {
+    colorName = 'GREEN'
+    colorCode = '#00FF00'
+  } else {
+    colorName = 'RED'
+    colorCode = '#FF0000'
+  }
+
+  // Send notifications
+  slackSend (color: colorCode, message: summary, channel: '#buildnotifications')
+}
