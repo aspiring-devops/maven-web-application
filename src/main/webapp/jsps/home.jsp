@@ -10,7 +10,7 @@
 </head>
 <body>
 <h1 align="center">Welcome to Mithun Technologies Private Limited. Bengaluru,Karnataka,India </h1>
-<h1 align="center"> Mithun Technologies - An Excellent Training center for DevOps with AWS in Maratha Halli Bangalore India and also for Job Assitance and Job Support ...Teaching Real Time scnerios, Come And Assure Your Success</h1>
+<h1 align="center"> Mithun Technologies - A Good Training center for DevOps with AWS in Maratha Halli Bangalore India ...Teaching Real Time scnerios, Come And Assure Your Success</h1>
 <hr>
 <br>
 	<h1><h3> Server Side IP Address </h3><br>
