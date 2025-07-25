@@ -9,7 +9,7 @@ pipeline{
         stage('Checkoout'){
             steps{
                // sh 'echo passed'
-                 git branch: 'master', url: 'https://github.com/aspiring-devops/maven-web-application.git'
+               git credentialsId: 'github-credentials', branch: 'master', url: 'https://github.com/aspiring-devops/maven-web-application.git'       
             }
         }
         stage('Build and Test'){
