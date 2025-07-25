@@ -8,7 +8,7 @@ pipeline{
     stages{
         stage('Checkoout'){
             steps{
-                sh 'echo passed'
+               // sh 'echo passed'
                  git branch: 'master', url: 'https://github.com/aspiring-devops/maven-web-application.git'
             }
         }
